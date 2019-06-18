@@ -1,6 +1,6 @@
 # ASP_NET_MVC_Q7
 
-建立一個 ASP NET MVC 專案，實作 TODO List 功能
+修改 Todo.MVC 專案，實作 TODO List 功能
 
 ## 功能說明
 
