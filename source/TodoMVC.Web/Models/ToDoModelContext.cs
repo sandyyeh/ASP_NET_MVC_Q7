@@ -6,7 +6,7 @@ using System.Web;
 
 namespace TodoMVC.Web.Models
 {
-    public class ToDoModelContext : DbContext
+    public class TodoModelContext : DbContext
     {
         // You can add custom code to this file. Changes will not be overwritten.
         // 
@@ -15,10 +15,10 @@ namespace TodoMVC.Web.Models
         // For more information refer to the documentation:
         // http://msdn.microsoft.com/en-us/data/jj591621.aspx
     
-        public ToDoModelContext() : base("name=ToDoModelContext")
+        public TodoModelContext() : base("name=TodoModelContext")
         {
         }
 
-        public System.Data.Entity.DbSet<TodoMVC.Web.Models.ToDoModel> ToDoModels { get; set; }
+        public System.Data.Entity.DbSet<TodoMVC.Web.Models.TodoModel> TodoModels { get; set; }
     }
 }

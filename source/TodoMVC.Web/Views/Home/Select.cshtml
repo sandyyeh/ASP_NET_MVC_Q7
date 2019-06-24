@@ -1,76 +1,52 @@
 ﻿@model TodoMVC.Web.Models.ViewModel
-@Html.Partial("Create")
+@*@Html.Partial("Create")*@
 @foreach (var item in Model.ToDoModels)
 {
-<tr>
+    <tr>
+        @*@Html.EditorFor(x => x.ToDoModel.Status)*@
+        @*<input id="check" class="hidden-field" type="checkbox" value="@item.Status" onChange="this.form.action = 'Update';this.form.submit();" name="check">*@
 
-    @*@Html.EditorFor(x => x.ToDoModel.Status)*@
-    @*<input id="check" class="hidden-field" type="checkbox" value="@item.Status" onChange="this.form.action = 'Update';this.form.submit();" name="check">*@
-
-
-    @*@Html.EditorFor(model => model.ToDoModel.Status)
-        @Html.ValidationMessageFor(model => model.ToDoModel.Status, "", new { @class = "text-danger",id=Model.ToDoModel.Id })*@
-
-    <td>
-        @Html.EditorFor(modelItem => item.Status, new { id = item.Id, onclick = "this.form.submit();" })
-    </td>
+        @*<td>
+                  @Html.EditorFor(modelItem => item.Status, new { id = item.Id, onclick = "this.form.submit();" })
+            </td>*@
 
 
-
-    <td>
-        @Html.DisplayFor(modelItem => item.Content)
-    </td>
-    <td>
-        @*@Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-            @Html.ActionLink("Details", "Details", new { id = item.Id }) |*@
-        @Html.ActionLink("Delete", "Delete", new { id = item.Id })
-    </td>
-</tr>
+        <td>
+            @Html.ActionLink((item.Status ? "Done" : "UnDone"), "Update", new { id = item.Id ,route=ViewBag.route}, new { @Onclick = "changStatus(this);" })
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Content)
+        </td>
+        <td>
+            @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+        </td>
+    </tr>
     <br>
 }
 
-@Html.ActionLink("All", "Select")|
-@Html.ActionLink("Active", "Select", new { status = "false" })|
-@Html.ActionLink("Completed", "Select", new { status = "true" })|
+@Html.ActionLink("All", "Index")|
+@Html.ActionLink("Active", "Select", new { status = false })|
+@Html.ActionLink("Completed", "Select", new { status = true })|
 @Html.ActionLink("Clear Completed", "Clear")
 
 <script src="~/Scripts/jquery-1.10.2.min.js"></script>
 <script>
-    $(function () {
-        $(":checkbox").change(function () {
-            $.post("Update", { id: this.id, checked: this.checked });
+        $(function () {
+            $(":checkbox").change(function () {
+                $.post("Update", { id: this.id, checked: this.checked });
+            });
         });
-    });
-    //$(document).on("click", "#hi", function () {
-    //    if ($(this).is(':checked') {
-    //        $('form').submit();
-    //    }
-    //});
+        //$(document).on("click", "#hi", function () {
+        //    if ($(this).is(':checked') {
+        //        $('form').submit();
+        //    }
+        //});
 </script>
-@*<p>
-        @Html.ActionLink("Create New", "Create")
-    </p>
-    <table class="table">
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.ToDoModel.Content)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ToDoModel.Status)
-            </th>
-            <th></th>
-        </tr>
 
-        @foreach (var item in Model.ToDoModels)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Content)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Status)
-                </td>
-            </tr>
-        }
+<script language="JavaScript">
+    function changStatus(obj) {
+        $(this).text("已經購買");
 
-    </table>*@
+    }
+</script>
+

@@ -9,9 +9,9 @@ namespace TodoMVC.Web.Models
     {
         public ViewModel()
         {
-            ToDoModel = new ToDoModel();
+            ToDoModel = new TodoModel();
         }
-        public ToDoModel ToDoModel { get; set; }
-        public List<ToDoModel> ToDoModels { get; set; }
+        public TodoModel ToDoModel { get; set; }
+        public List<TodoModel> ToDoModels { get; set; }
     }
 }

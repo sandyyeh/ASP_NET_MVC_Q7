@@ -1,99 +1,97 @@
-﻿using System.Data;
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
+using System.Web;
 using System.Web.Mvc;
 using TodoMVC.Web.Models;
-
 
 namespace TodoMVC.Web.Controllers
 {
     public class HomeController : Controller
     {
-        private ToDoModelContext db = new ToDoModelContext();
-
+        private TodoModelContext db = new TodoModelContext();
+        CreateClass createClass = new CreateClass();
         // GET: Home
         public ActionResult Index()
         {
+            ViewBag.route = RouteData.Values["Action"];
             ViewModel viewModel = new ViewModel();
-            viewModel.ToDoModels = db.ToDoModels.ToList();
+            viewModel.ToDoModels = db.TodoModels.ToList();
             return View(viewModel);
         }
 
         [HttpPost]
-        public ActionResult Index(ToDoModel toDoModel)
+        public ActionResult Index(TodoModel todoModel)
         {
-            //create
-            if (ModelState.IsValid && toDoModel.Content != null)
-            {
-                db.ToDoModels.Add(toDoModel);
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
+
+            createClass.CreateMethod(todoModel);
             return RedirectToAction("Index");
         }
 
 
-        public ActionResult Select(string status,ToDoModel toDoModel)
+
+        public ActionResult Select(bool status, TodoModel todoModel,string a)
         {
+        
             ViewModel viewModel = new ViewModel();
 
+            createClass.CreateMethod(todoModel);
 
-            if (ModelState.IsValid && toDoModel.Content != null)
+            if (a=="Index")
             {
-                toDoModel.Status = false;
-                db.ToDoModels.Add(toDoModel);
-                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            if (todoModel.Content != null)
+            {
                 return RedirectToAction("Index");
             }
 
-            if (status == "true")
+            if (status)
             {
-                var q = (from o in db.ToDoModels
-                         where o.Status == true
-                         select o).ToList();
+                var q = db.TodoModels.Where(o => o.Status).ToList();
                 viewModel.ToDoModels = q;
-
-                return View(viewModel);
+                return View("Index", viewModel);
 
             }
-            if (status == "false")
+            if (status == false)
             {
-                var q = (from o in db.ToDoModels
-                         where o.Status == false
-                         select o).ToList();
+                var q = db.TodoModels.Where(o => o.Status == false).ToList();
                 viewModel.ToDoModels = q;
-                return View(viewModel);
+                return View("Index", viewModel);
             }
-
             return RedirectToAction("Index");
 
-
         }
 
-        public ActionResult aa()
-        {
-            return View();
-        }
-        [HttpPost]
-        public ActionResult Update(int? id)
-        {
-            ToDoModel toDoModel = new ToDoModel();
-            var data = db.ToDoModels.Find(id);
-            //if (data.Status == false)
-            //{
-            //    toDoModel.Status = true;
-            //    db.SaveChanges();
-            //}
-            //else
-            //{
-            //    toDoModel.Status =false;
-            //    db.SaveChanges();
-            //}
 
-            //return RedirectToAction("Index");
 
-            return View();
+        public ActionResult Update(int? id,string route)
+        {
+            TodoModel todoModel = new TodoModel();
+            var data = db.TodoModels.Find(id);
+    
+
+
+            if (data.Status == false)
+            {
+                data.Status = true;
+                db.SaveChanges();
+              
+            }
+            else
+            {
+                data.Status = false;
+                db.SaveChanges();            
+
+            }
+            //var a = Request.UrlReferrer;
+            return RedirectToAction("Select", new { status = !data.Status,a=route });
+
+
+
         }
 
 
@@ -101,24 +99,19 @@ namespace TodoMVC.Web.Controllers
         public ActionResult Delete(int? id)
         {
 
-            ToDoModel toDoModel = db.ToDoModels.Find(id);
-            db.ToDoModels.Remove(toDoModel);
+            TodoModel toDoModel = db.TodoModels.Find(id);
+            var firstStatus = toDoModel.Status;
+            db.TodoModels.Remove(toDoModel);
             db.SaveChanges();
-            return RedirectToAction("Index");
+
+            return RedirectToAction("Select", new { status = firstStatus });
         }
 
 
-        public ActionResult Clear(ToDoModel toDoModel)
+        public ActionResult Clear(TodoModel todoModel)
         {
-            if (ModelState.IsValid && toDoModel.Content != null)
-            {
-                db.ToDoModels.Add(toDoModel);
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-
-            var query = db.ToDoModels.Where(o => o.Status == true);
-            db.ToDoModels.RemoveRange(query);
+            var query = db.TodoModels.Where(o => o.Status);
+            db.TodoModels.RemoveRange(query);
             db.SaveChanges();
             return RedirectToAction("Index");
         }
@@ -132,5 +125,20 @@ namespace TodoMVC.Web.Controllers
             base.Dispose(disposing);
         }
 
+    }
+    public class CreateClass : Controller
+    {
+        private TodoModelContext db = new TodoModelContext();
+        public TodoModel CreateMethod(TodoModel toDoModel)
+        {
+            if (ModelState.IsValid && toDoModel.Content != null)
+            {
+                toDoModel.Status = false;
+                db.TodoModels.Add(toDoModel);
+                db.SaveChanges();
+                return toDoModel;
+            }
+            return toDoModel;
+        }
     }
 }

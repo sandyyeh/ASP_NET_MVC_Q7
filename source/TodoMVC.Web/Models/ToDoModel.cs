@@ -5,10 +5,11 @@ using System.Web;
 
 namespace TodoMVC.Web.Models
 {
-    public class ToDoModel
+    public class TodoModel
     {
         public int Id { get; set; }
         public string Content { get; set; }
         public bool Status { get; set; }
+        public string URL { get; set; }
     }
 }

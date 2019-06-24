@@ -1,6 +1,7 @@
-CREATE TABLE [dbo].[ListModels] (
+CREATE TABLE [dbo].[TodoModels] (
     [Id]      INT            IDENTITY (1, 1) NOT NULL,
-    [Content] NVARCHAR (MAX) NOT NULL,
+    [Content] NVARCHAR (MAX) NULL,
     [Status]  BIT            NOT NULL,
-    CONSTRAINT [PK_dbo.ListModels] PRIMARY KEY CLUSTERED ([Id] ASC)
+    [URL]     NVARCHAR (MAX) NULL,
+    CONSTRAINT [PK_dbo.TodoModels] PRIMARY KEY CLUSTERED ([Id] ASC)
 );
