@@ -1,5 +1,8 @@
 ﻿@model TodoMVC.Web.Models.ViewModel
-@*@Html.Partial("Create")*@
+
+
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+
 @foreach (var item in Model.ToDoModels)
 {
     <tr>
@@ -12,38 +15,33 @@
 
 
         <td>
-            @Html.ActionLink((item.Status ? "Completed" : "Active"), "Update", new { id = item.Id, route = Model.ToDoModel.URL })
+            @Html.ActionLink((item.Status ? "Completed" : "Active"), "Update", new { id = item.Id, route = Model.ToDoModel.URL, firstStatus = item.Status })
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.Content)
         </td>
         <td>
-            @Html.ActionLink("Delete", "Delete", new { id = item.Id, route = Model.ToDoModel.URL })
+   
+            <input type="button" onclick="location.href='@Url.Action("Delete","Home", new {  id = item.Id, route = Model.ToDoModel.URL, firstStatus = item.Status })'" value="X"style="padding: 3px 7px; border-radius: 18px; border: 1px solid rgb(208, 39, 24); border-image: none; color: rgb(255, 255, 255); font-family: Arial; font-size: 15px; font-weight: bold; text-decoration: none; display: inline-block; cursor: pointer; background-color: rgb(198, 45, 31);">
+            @*@Html.ActionLink("Delete", "Delete", new { id = item.Id, route = Model.ToDoModel.URL, firstStatus = item.Status })*@
         </td>
     </tr>
     <br>
 }
+
+
 
 @Html.ActionLink("All", "Index")|
 @Html.ActionLink("Active", "Select", new { status = false })|
 @Html.ActionLink("Completed", "Select", new { status = true })|
 @Html.ActionLink("Clear Completed", "Clear")
 
-<script src="~/Scripts/jquery-1.10.2.min.js"></script>
-<script>
-    $(function () {
-        $(":checkbox").change(function () {
-            $.post("Update", { id: this.id, checked: this.checked });
-        });
-    });
 
-</script>
 
-<script language="JavaScript">
-    function changStatus(obj) {
-        $(this).text("已經購買");
-
-    }
-</script>
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+<script src="~/Scripts/jquery.validate.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
 
 

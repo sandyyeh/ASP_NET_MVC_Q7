@@ -1,31 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
+﻿using System.Data;
 using System.Linq;
-using System.Net;
-using System.Web;
 using System.Web.Mvc;
 using TodoMVC.Web.Models;
+using TodoMVC.Web.Infrastructure.Repository;
+
 
 namespace TodoMVC.Web.Controllers
 {
     public class HomeController : Controller
     {
-        private DatabaseEntities db = new DatabaseEntities();
-        CreateClass createClass = new CreateClass();
+        private DatabaseEntities _db = new DatabaseEntities();
+        TodoRepository todoRepository = new TodoRepository();
+
         // GET: Home
         public ActionResult Index()
         {
-            ViewModel viewModel = new ViewModel();
-            viewModel.ToDoModels = db.TodoModel.ToList();
-           viewModel.ToDoModel.URL = RouteData.Values["Action"].ToString();
-            return View(viewModel);
+            var list = todoRepository.GetAll();
+
+            return View(list);
         }
+
         [HttpPost]
         public ActionResult Index(TodoModel todoModel)
         {
-            createClass.CreateMethod(todoModel);
+            todoRepository.Create(todoModel);
+
             return RedirectToAction("Index");
         }
 
@@ -40,65 +39,38 @@ namespace TodoMVC.Web.Controllers
 
             if (routeValue == "Index" || todoModel.Content != null)
             {
+                todoRepository.Create(todoModel);
                 return RedirectToAction("Index");
             }
 
-
-            if (status)
-            {
-                var q = db.TodoModel.Where(o => o.Status).ToList();
-                viewModel.ToDoModels = q;
-                return View("Index", viewModel);
-            }
-            else
-            {
-                var q = db.TodoModel.Where(o => o.Status == false).ToList();
-                viewModel.ToDoModels = q;
-                return View("Index", viewModel);
-            }
-
+            todoRepository.Select(status, viewModel);
+            return View("Index", viewModel);
 
         }
 
 
-        public ActionResult Update(int? id, string route)
+        public ActionResult Update(int id, bool firstStatus, string route)
         {
 
-            var data = db.TodoModel.Find(id);
+            todoRepository.Update(id, firstStatus);
 
-            if (data.Status == false)
-            {
-                data.Status = true;
-                db.SaveChanges();
-            }
-            else
-            {
-                data.Status = false;
-                db.SaveChanges();
-
-            }
-            //var a = Request.UrlReferrer;
-            return RedirectToAction("Select", new { status = !data.Status, routeValue = route });
+            return RedirectToAction("Select", new { status = firstStatus, routeValue = route });
 
         }
 
         // GET: Home/Delete/5
-        public ActionResult Delete(int? id, string route)
+        public ActionResult Delete(int id, bool firstStatus, string route)
         {
 
-            TodoModel toDoModel = db.TodoModel.Find(id);
-            var firstStatus = toDoModel.Status;
-            db.TodoModel.Remove(toDoModel);
-            db.SaveChanges();
+            todoRepository.Delete(id);
 
             return RedirectToAction("Select", new { status = firstStatus, routeValue = route });
         }
 
-        public ActionResult Clear(TodoModel todoModel)
+        public ActionResult Clear()
         {
-            var query = db.TodoModel.Where(o => o.Status);
-            db.TodoModel.RemoveRange(query);
-            db.SaveChanges();
+            todoRepository.Clear();
+
             return RedirectToAction("Index");
         }
 
@@ -107,25 +79,11 @@ namespace TodoMVC.Web.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                _db.Dispose();
             }
             base.Dispose(disposing);
         }
-        public class CreateClass : Controller
-        {
-            private DatabaseEntities db = new DatabaseEntities();
-            public TodoModel CreateMethod(TodoModel toDoModel)
-            {
-                if (ModelState.IsValid && toDoModel.Content != null)
-                {
-                    toDoModel.Status = false;
-                    db.TodoModel.Add(toDoModel);
-                    db.SaveChanges();
-                    return toDoModel;
-                }
-                return toDoModel;
-            }
-        }
+
 
     }
 }
