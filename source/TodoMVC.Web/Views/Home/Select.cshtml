@@ -12,13 +12,13 @@
 
 
         <td>
-            @Html.ActionLink((item.Status ? "Done" : "UnDone"), "Update", new { id = item.Id ,route=ViewBag.route}, new { @Onclick = "changStatus(this);" })
+            @Html.ActionLink((item.Status ? "Completed" : "Active"), "Update", new { id = item.Id, route = Model.ToDoModel.URL })
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.Content)
         </td>
         <td>
-            @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+            @Html.ActionLink("Delete", "Delete", new { id = item.Id, route = Model.ToDoModel.URL })
         </td>
     </tr>
     <br>
@@ -31,16 +31,12 @@
 
 <script src="~/Scripts/jquery-1.10.2.min.js"></script>
 <script>
-        $(function () {
-            $(":checkbox").change(function () {
-                $.post("Update", { id: this.id, checked: this.checked });
-            });
+    $(function () {
+        $(":checkbox").change(function () {
+            $.post("Update", { id: this.id, checked: this.checked });
         });
-        //$(document).on("click", "#hi", function () {
-        //    if ($(this).is(':checked') {
-        //        $('form').submit();
-        //    }
-        //});
+    });
+
 </script>
 
 <script language="JavaScript">
@@ -49,4 +45,5 @@
 
     }
 </script>
+
 
