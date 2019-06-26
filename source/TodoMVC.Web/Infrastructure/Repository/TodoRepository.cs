@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-
+﻿using System.Linq;
 using TodoMVC.Web.Infrastructure.Interface;
 using TodoMVC.Web.Models;
 
@@ -9,14 +7,29 @@ namespace TodoMVC.Web.Infrastructure.Repository
     public class TodoRepository : ITodoRepository
     {
 
-        public ViewModel GetAll()
+        public ViewModel GetAll(string status, ViewModel viewModel)
         {
             using (var db = new DatabaseEntities())
             {
-                ViewModel viewModel = new ViewModel();
-                viewModel.ToDoModels = db.TodoModel.ToList();
-                viewModel.ToDoModel.URL = "Index";
-                return viewModel;
+                if (status == "Active")
+                {
+                    var q = db.TodoModel.Where(o => o.Status == false).ToList();
+                    viewModel.ToDoModels = q;
+                    return viewModel;
+                }
+                else if (status == "Completed")
+                {
+                    var q = db.TodoModel.Where(o => o.Status).ToList();
+                    viewModel.ToDoModels = q;
+                    return viewModel;
+                }
+                else
+                {
+                    viewModel.ToDoModels = db.TodoModel.ToList();
+                    return viewModel;
+                }
+
+
             }
         }
 
@@ -35,25 +48,8 @@ namespace TodoMVC.Web.Infrastructure.Repository
             }
 
         }
-        public ViewModel Select(bool status, ViewModel viewModel)
-        {
-            using (var db = new DatabaseEntities())
-            {
-                if (status)
-                {
-                    var q = db.TodoModel.Where(o => o.Status).ToList();
-                    viewModel.ToDoModels = q;
-                    return viewModel;
-                }
-                else
-                {
-                    var q = db.TodoModel.Where(o => o.Status == false).ToList();
-                    viewModel.ToDoModels = q;
-                    return viewModel;
-                }
-            }
-        }
-        public void Update(int id, bool status)
+      
+        public void Update(int id)
         {
             using (var db = new DatabaseEntities())
             {
@@ -85,8 +81,8 @@ namespace TodoMVC.Web.Infrastructure.Repository
         {
             using (var db = new DatabaseEntities())
             {
-                var query = db.TodoModel.Where(o => o.Status);
-                db.TodoModel.RemoveRange(query);
+                var q = db.TodoModel.Where(o => o.Status);
+                db.TodoModel.RemoveRange(q);
                 db.SaveChanges();
             }
         }

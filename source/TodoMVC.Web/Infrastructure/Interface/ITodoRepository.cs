@@ -10,15 +10,12 @@ namespace TodoMVC.Web.Infrastructure.Interface
     public interface ITodoRepository
     {
         void Create(TodoModel todoModel);
-
-        ViewModel Select(bool status, ViewModel viewModel);
-        void Update(int id, bool status);
-
+        void Update(int id);
         void Delete(int id);
         void Clear();
-       ViewModel GetAll();
+        ViewModel GetAll(string status, ViewModel viewModel);
 
 
-        
+
     }
 }

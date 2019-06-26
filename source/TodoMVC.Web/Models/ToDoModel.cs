@@ -17,6 +17,5 @@ namespace TodoMVC.Web.Models
         public int Id { get; set; }
         public string Content { get; set; }
         public bool Status { get; set; }
-        public string URL { get; set; }
     }
 }

@@ -1,8 +1,6 @@
-﻿using System.Data;
-using System.Linq;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 using TodoMVC.Web.Models;
-using TodoMVC.Web.Infrastructure.Repository;
+using TodoMVC.Web.Service;
 
 
 namespace TodoMVC.Web.Controllers
@@ -10,12 +8,19 @@ namespace TodoMVC.Web.Controllers
     public class HomeController : Controller
     {
         private DatabaseEntities _db = new DatabaseEntities();
-        TodoRepository todoRepository = new TodoRepository();
+        private TodoService _todoService;
+
+
+        public HomeController()
+        {
+            _todoService = new TodoService();
+        }
 
         // GET: Home
-        public ActionResult Index()
+        public ActionResult Index(string status, ViewModel viewModel)
         {
-            var list = todoRepository.GetAll();
+
+            var list = _todoService.GetAll(status, viewModel);
 
             return View(list);
         }
@@ -23,53 +28,33 @@ namespace TodoMVC.Web.Controllers
         [HttpPost]
         public ActionResult Index(TodoModel todoModel)
         {
-            todoRepository.Create(todoModel);
+            _todoService.Create(todoModel);
 
             return RedirectToAction("Index");
         }
 
 
-
-
-        public ActionResult Select(bool status, TodoModel todoModel, string routeValue)
+        public ActionResult Update(int id)
         {
 
-            ViewModel viewModel = new ViewModel();
-            viewModel.ToDoModel.URL = RouteData.Values["Action"].ToString();
+            _todoService.Update(id);
 
-            if (routeValue == "Index" || todoModel.Content != null)
-            {
-                todoRepository.Create(todoModel);
-                return RedirectToAction("Index");
-            }
-
-            todoRepository.Select(status, viewModel);
-            return View("Index", viewModel);
-
-        }
-
-
-        public ActionResult Update(int id, bool firstStatus, string route)
-        {
-
-            todoRepository.Update(id, firstStatus);
-
-            return RedirectToAction("Select", new { status = firstStatus, routeValue = route });
+            return Redirect(Request.UrlReferrer.AbsoluteUri);
 
         }
 
         // GET: Home/Delete/5
-        public ActionResult Delete(int id, bool firstStatus, string route)
+        public ActionResult Delete(int id)
         {
 
-            todoRepository.Delete(id);
+            _todoService.Delete(id);
 
-            return RedirectToAction("Select", new { status = firstStatus, routeValue = route });
+            return Redirect(Request.UrlReferrer.AbsoluteUri);
         }
 
         public ActionResult Clear()
         {
-            todoRepository.Clear();
+            _todoService.Clear();
 
             return RedirectToAction("Index");
         }
