@@ -1,0 +1,143 @@
+﻿@*<form class="add-items" method="post">
+
+        <input type="text" class="form-control" id="todo-list-item" placeholder="What do you need to do today?">
+
+    </form>
+    <div class="toDoList"></div>*@
+@*<ul id="list-items"></ul>*@
+
+
+<script src="~/Scripts/jquery-3.4.1.slim.min.js"></script>
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<script src="~/Scripts/modernizr-2.8.3.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+
+@*<script>
+        $(document).ready(function () {
+            $('#add-items').submit(function (event) {
+                event.preventDefault();
+                var item = $('#todo-list-item').val();
+                alert(item);
+                if (item) {
+                    $("#toDoList").append("<div class='toDos'> <input type='checkbox'>  <p>" + item + "</p>     <button class='delete '>Delete</button>   </div>");
+                    localStorage.setItem('listItems', $('#toDoList').html());
+
+                    //$('#todo-list-item').val("");
+                }
+
+            });
+
+            $(document).on('change', '.checkbox', function () {
+                if ($(this).attr('checked')) {
+                    $(this).removeAttr('checked');
+                }
+                else {
+                    $(this).attr('checked', 'checked');
+                }
+
+                $(this).parent().toggleClass('completed');
+
+                localStorage.setItem('listItems', $('#list-items').html());
+            });
+
+            $(document).on('click', '.remove', function () {
+                $(this).parent().remove();
+
+                localStorage.setItem('listItems', $('#list-items').html());
+            });
+
+        });
+
+    </script>*@
+
+<form class="container">
+    <h2>todos</h2>
+    <input type="text" class="form-control" id="content" name="content" placeholder="What needs to be done?">
+    @*<button id="add">ADD</button>*@
+
+</form>
+<div class="toDoList" id="toDoList"></div>
+@*<tr>
+
+        <td>
+            <input type="button" id="check">
+        </td>
+
+        <td>
+            <input type="button" id="delete" >
+
+        </td>
+    </tr>*@
+<br>
+<script>
+
+
+    $(document).ready(function () {
+        //$('.toDoList').html(localStorage.getItem('listItems'));
+
+        getList();      
+
+    });
+
+
+
+    function getList() {
+        
+        $.ajax({
+            url: '/Ajax/Index',
+            data: { id: id },
+            type: 'get',
+            cache: false,
+            async: false,
+            dataType: 'json',
+            success: function (data) {
+                data = JSON.parse(data);
+                if (data.length > 0) {
+                    $('#toDoList').empty();
+       
+                    $.each(data, function (i, item) {
+                      
+                        $("#toDoList").append("<li><input class='checkbox' type='checkbox'/>" + val(item.content) + "<a class='remove'>x</a><hr></li>");
+                    });
+                }
+
+            }
+        });
+    }
+
+
+    $(function () {
+        $(".container").submit(function (event) {
+            event.preventDefault();
+
+
+            var inputValue = $("#content").val();
+            if (inputValue) {
+                $("#toDoList").append("<li><input class='checkbox' type='checkbox'/>" + inputValue + "<a class='remove'>x</a><hr></li>");
+                localStorage.setItem('listItems', $('.toDoList').html());
+                $('#content').val("");
+            }
+
+        });
+        $(document).on('change', '.checkbox', function () {
+            if ($(this).attr('checked')) {
+                $(this).removeAttr('checked');
+            }
+            else {
+                $(this).attr('checked', 'checked');
+            }
+
+            $(this).parent().toggleClass('completed');
+
+            localStorage.setItem('listItems', $('#toDoList').html());
+        });
+
+        $(document).on('click', '.remove', function () {
+            $(this).parent().remove();
+
+            localStorage.setItem('listItems', $('#toDoList').html());
+        });
+
+    });
+</script>

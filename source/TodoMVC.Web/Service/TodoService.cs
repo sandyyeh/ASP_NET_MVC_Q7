@@ -19,7 +19,7 @@ namespace TodoMVC.Web.Service
         }
 
         public  ViewModel GetAll(string status, ViewModel viewModel)
-        {
+        {            
             var list = _todoRepository.GetAll(status, viewModel);
             return list;
         }
