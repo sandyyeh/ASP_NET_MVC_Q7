@@ -7,7 +7,7 @@ namespace TodoMVC.Web.Controllers
 {
     public class HomeController : Controller
     {
-        private DatabaseEntities _db = new DatabaseEntities();
+        private Database1Entities _db = new Database1Entities();
         private TodoService _todoService;
 
 

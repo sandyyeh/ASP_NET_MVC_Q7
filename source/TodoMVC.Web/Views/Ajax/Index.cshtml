@@ -1,92 +1,37 @@
-﻿@*<form class="add-items" method="post">
-
-        <input type="text" class="form-control" id="todo-list-item" placeholder="What do you need to do today?">
-
-    </form>
-    <div class="toDoList"></div>*@
-@*<ul id="list-items"></ul>*@
-
-
+﻿@model  TodoMVC.Web.Models.ViewModel
 <script src="~/Scripts/jquery-3.4.1.slim.min.js"></script>
 <script src="~/Scripts/jquery-3.4.1.min.js"></script>
 <script src="~/Scripts/modernizr-2.8.3.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
 
-@*<script>
-        $(document).ready(function () {
-            $('#add-items').submit(function (event) {
-                event.preventDefault();
-                var item = $('#todo-list-item').val();
-                alert(item);
-                if (item) {
-                    $("#toDoList").append("<div class='toDos'> <input type='checkbox'>  <p>" + item + "</p>     <button class='delete '>Delete</button>   </div>");
-                    localStorage.setItem('listItems', $('#toDoList').html());
-
-                    //$('#todo-list-item').val("");
-                }
-
-            });
-
-            $(document).on('change', '.checkbox', function () {
-                if ($(this).attr('checked')) {
-                    $(this).removeAttr('checked');
-                }
-                else {
-                    $(this).attr('checked', 'checked');
-                }
-
-                $(this).parent().toggleClass('completed');
-
-                localStorage.setItem('listItems', $('#list-items').html());
-            });
-
-            $(document).on('click', '.remove', function () {
-                $(this).parent().remove();
-
-                localStorage.setItem('listItems', $('#list-items').html());
-            });
-
-        });
-
-    </script>*@
-
+<input type="button" class="all" value="All">
+<input type="button" class="active" value="Active">
+<input type="button" class="completed" value="Completed">
+<input type="button" class="clear" value="Clear Completed">
+<br/>
 <form class="container">
+   
     <h2>todos</h2>
     <input type="text" class="form-control" id="content" name="content" placeholder="What needs to be done?">
-    @*<button id="add">ADD</button>*@
-
 </form>
+<br/>
 <div class="toDoList" id="toDoList"></div>
-@*<tr>
-
-        <td>
-            <input type="button" id="check">
-        </td>
-
-        <td>
-            <input type="button" id="delete" >
-
-        </td>
-    </tr>*@
-<br>
 <script>
 
 
     $(document).ready(function () {
-        //$('.toDoList').html(localStorage.getItem('listItems'));
-
-        getList();      
+        var status = ""
+        todoList(status);
 
     });
 
 
 
-    function getList() {
-        
+    function todoList(status) {
         $.ajax({
-            url: '/Ajax/Index',
-            data: { id: id },
+            url: '/Ajax/List',
+            data: { status: status },
             type: 'get',
             cache: false,
             async: false,
@@ -95,49 +40,119 @@
                 data = JSON.parse(data);
                 if (data.length > 0) {
                     $('#toDoList').empty();
-       
                     $.each(data, function (i, item) {
-                      
-                        $("#toDoList").append("<li><input class='checkbox' type='checkbox'/>" + val(item.content) + "<a class='remove'>x</a><hr></li>");
+                        $("#toDoList").append("<input type='hidden' id='getId' value='" + item.Id + "'> <input type='button' id='status'  value='" + (item.Status ? "V " : "   ") + "'style='padding: 3px 7px; border-radius: 18px; border: 1px solid #5cbf2a; color:#ffffff; font-family: Arial; font-size: 15px; font-weight: bold; text-decoration: none; display: inline-block; cursor: pointer; background-color:#5cbf2a;'/>" + item.Content + "<input type='button' id='delete' value='X' style='padding: 3px 7px; border - radius: 18px; border: 1px solid rgb(208, 39, 24); border - image: none; color: rgb(255, 255, 255); font - family: Arial; font - size: 15px; font - weight: bold; text - decoration: none; display: inline - block; cursor: pointer; background - color: rgb(198, 45, 31);'/><hr>");
+                        
                     });
-                }
+                   
 
+                }
+            }
+        });
+    }
+
+    function create(inputValue) {
+        $.ajax({
+            url: '/Ajax/Create',
+            data: { content: inputValue },
+            type: 'post',
+            cache: false,
+            async: false,
+            dataType: 'json',
+            success: function (data) {
+                todoList();
             }
         });
     }
 
 
+    function clear() {
+        $.ajax({
+            url: '/Ajax/Clear',           
+            type: 'post',
+            cache: false,
+            async: false,
+            dataType: 'json',
+            success: function () {
+                todoList();
+            }
+        });
+    }
+    function delete1(deleteId,deleteStatus) {
+        $.ajax({
+            url: '/Ajax/Delete',
+            data: { id: deleteId},
+            type: 'post',
+            cache: false,
+            async: false,
+            dataType: 'json',
+            success: function (data) {
+                todoList(deleteStatus);
+            }
+        });
+    }
+    function changeStatus(changeId,status) {
+        $.ajax({
+            url: '/Ajax/Update',
+            data: { id: changeId },
+            type: 'post',
+            cache: false,
+            async: false,
+            dataType: 'json',
+            success: function (data) {
+                todoList(status);
+            }
+        });
+    }
+
     $(function () {
+
         $(".container").submit(function (event) {
-            event.preventDefault();
-
-
             var inputValue = $("#content").val();
             if (inputValue) {
-                $("#toDoList").append("<li><input class='checkbox' type='checkbox'/>" + inputValue + "<a class='remove'>x</a><hr></li>");
-                localStorage.setItem('listItems', $('.toDoList').html());
+                create(inputValue);
                 $('#content').val("");
             }
 
         });
-        $(document).on('change', '.checkbox', function () {
-            if ($(this).attr('checked')) {
-                $(this).removeAttr('checked');
+
+        $(document).on('click', '#delete', function () {
+            let deleteId = $('#getId').val();
+            let deleteStatus = "";
+            if ($('#staus').val() == "V") {
+                deleteStatus = true;
             }
             else {
-                $(this).attr('checked', 'checked');
+                deleteStatus = false;
             }
 
-            $(this).parent().toggleClass('completed');
-
-            localStorage.setItem('listItems', $('#toDoList').html());
+            delete1(deleteId, deleteStatus);
+        });
+       
+        $(document).on('click', '#status', function () {
+            let changeId = $('#getId').val();
+            changeStatus(changeId);
         });
 
-        $(document).on('click', '.remove', function () {
-            $(this).parent().remove();
+        
 
-            localStorage.setItem('listItems', $('#toDoList').html());
+        
+
+        $(document).on('click', '.clear', function () {
+            clear();
         });
 
+        $(document).on('click', '.all', function () {
+            todoList();
+        });
+        $(document).on('click', '.active', function () {
+            todoList(false);
+        });
+        $(document).on('click', '.completed', function () {
+            todoList(true);
+        });
+        
     });
+
+  
 </script>

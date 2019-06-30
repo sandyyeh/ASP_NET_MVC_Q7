@@ -14,7 +14,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>TodoMVC.Web</RootNamespace>
     <AssemblyName>TodoMVC.Web</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <UseIISExpress>true</UseIISExpress>
     <Use64BitIISExpress />
     <IISExpressSSLPort />
@@ -26,6 +26,7 @@
     </NuGetPackageImportStamp>
     <TypeScriptToolsVersion>3.1</TypeScriptToolsVersion>
     <WebGreaseLibPath>..\packages\WebGrease.1.5.2\lib</WebGreaseLibPath>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -70,9 +71,6 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.Helpers.dll</HintPath>
     </Reference>
@@ -94,7 +92,6 @@
     <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
     </Reference>
-    <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
@@ -111,9 +108,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Data\Database.mdf" />
-    <Content Include="App_Data\Database_log.ldf">
-      <DependentUpon>Database.mdf</DependentUpon>
+    <Content Include="App_Data\Database1.mdf" />
+    <Content Include="App_Data\Database1_log.ldf">
+      <DependentUpon>Database1.mdf</DependentUpon>
     </Content>
     <Content Include="Content\bootstrap-grid.css" />
     <Content Include="Content\bootstrap-grid.min.css" />
@@ -125,8 +122,8 @@
     <Content Include="Global.asax" />
     <Content Include="Models\TodoModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>TodoModel.Context.cs</LastGenOutput>
       <DependentUpon>TodoModel.edmx</DependentUpon>
+      <LastGenOutput>TodoModel.Context.cs</LastGenOutput>
     </Content>
     <Content Include="Models\TodoModel.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -155,6 +152,13 @@
     <Content Include="Scripts\esm\popper.js.map" />
     <Content Include="Scripts\esm\popper-utils.min.js.map" />
     <Content Include="Scripts\esm\popper-utils.js.map" />
+    <EntityDeploy Include="Models\TodoModel.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>TodoModel.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="Models\TodoModel.edmx.diagram">
+      <DependentUpon>TodoModel.edmx</DependentUpon>
+    </Content>
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
@@ -211,14 +215,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\web.config" />
-    <EntityDeploy Include="Models\TodoModel.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>TodoModel.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-    <Content Include="Models\TodoModel.edmx.diagram">
-      <DependentUpon>TodoModel.edmx</DependentUpon>
-      <SubType>Designer</SubType>
-    </Content>
     <None Include="packages.config" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
