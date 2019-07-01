@@ -42,9 +42,7 @@ namespace TodoMVC.Web.Controllers
 
             json = JsonConvert.SerializeObject(list);
             return Json(json, JsonRequestBehavior.AllowGet);
-
-
-
+            
         }
 
         [HttpPost]

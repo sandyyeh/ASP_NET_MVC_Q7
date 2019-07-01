@@ -5,15 +5,15 @@
 <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
 
 
+<form class="input">
+    <h2>todoList</h2>
+    <input type="text" class="form-control" id="content" placeholder="What needs to be done?">
+</form>
+<br />
 <input type="button" class="btnAll btn btn-info active" value="All">
 <input type="button" class="btnActive btn btn-info" value="Active">
 <input type="button" class="btnCompleted btn btn-info" value="Completed">
 <input type="button" class="btnClear btn btn-info" value="Clear Completed">
-<br />
-<form class="container">
-    <h2>todoList</h2>
-    <input type="text" class="form-control" id="content" placeholder="What needs to be done?">
-</form>
 <div class="toDoList" id="toDoList"></div>
 
 
@@ -23,7 +23,7 @@
         var status = ""
         todoList(status);
     });
-    
+
 
     function todoList(status) {
         $.ajax({
@@ -38,11 +38,10 @@
                 if (data.length > 0) {
                     $('#toDoList').empty();
                     $.each(data, function (i, item) {
-                        $("#toDoList").append("<hr><input type='button' class='status btn btn-success' id='" + item.Id + "' value='" + (item.Status ? "V" : "  ") + "'style='padding: 3px 7px; border-radius: 18px;'/>   " + (item.Status ? "<strike>" + item.Content + "</strike >" : item.Content) + "    <input type='button' class='delete btn btn-mini btn-danger' style='padding: 3px 7px; border-radius: 18px;' id='" + item.Id + "'value='X'>");
+                        $("#toDoList").append("<hr><input type='button' class='btnStatus btn btn-success' id='" + item.Id + "' name='" + status + "' value='" + (item.Status ? "V" : "  ") + "'style='padding: 3px 7px; border-radius: 18px;'/>   " + (item.Status ? "<strike>" + item.Content + "</strike >" : item.Content) + "    <input type='button' class='btnDelete btn btn-mini btn-danger' style='padding: 3px 7px; border-radius: 18px;' id='" + item.Id + "'name='" + status + "'value='X'>");
                     });
                 }
-                else
-                {
+                else {
                     $('#toDoList').empty();
                 }
             }
@@ -60,7 +59,9 @@
             success: function (data) {
                 todoList();
             }
+
         });
+
     }
 
 
@@ -69,13 +70,13 @@
             url: '/Ajax/Clear',
             type: 'post',
             cache: false,
-            async: false, 
+            async: false,
             success: function () {
                 todoList();
             }
         });
     }
-    function delete1(deleteId) {
+    function delete1(deleteId,status) {
         $.ajax({
             url: '/Ajax/Delete',
             data: { id: deleteId },
@@ -84,11 +85,11 @@
             async: false,
             dataType: 'json',
             success: function (data) {
-                todoList();
+                todoList(status);
             }
         });
     }
-    function changeStatus(changeId) {
+    function changeStatus(changeId,status) {
         $.ajax({
             url: '/Ajax/Update',
             data: { id: changeId },
@@ -97,32 +98,34 @@
             async: false,
             dataType: 'json',
             success: function (data) {
-                todoList();
+                todoList(status);
             }
         });
     }
 
     $(function () {
 
-        $(".container").submit(function (event) {
+        $(".input").submit(function () {
             var inputValue = $("#content").val();
             if (inputValue) {
                 create(inputValue);
                 $('#content').val("");
             }
-
+            return false;
         });
 
-        $(document).on('click', '.delete', function () {
+        $(document).on('click', '.btnDelete', function () {
             var deleteId = this.id;
-            delete1(deleteId);
+            let status = $(this).attr('name');
+            delete1(deleteId, status);            
         });
 
-        $(document).on('click', '.status', function () {
-            let changeId = this.id;
-            changeStatus(changeId);
+        $(document).on('click', '.btnStatus', function () {
+            let changeId = this.id;      
+            let status = $(this).attr('name');
+            changeStatus(changeId, status);        
         });
-        
+
         $(document).on('click', '.btnClear', function () {
             clear();
         });
