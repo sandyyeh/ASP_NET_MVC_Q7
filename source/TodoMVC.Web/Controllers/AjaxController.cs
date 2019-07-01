@@ -9,7 +9,7 @@ namespace TodoMVC.Web.Controllers
     public class AjaxController : Controller
     {
 
-        private Database1Entities _db = new Database1Entities();
+        private DatabaseEntities1 _db = new DatabaseEntities1();
         private TodoService _todoService;
 
 
@@ -23,92 +23,59 @@ namespace TodoMVC.Web.Controllers
         {
             return View();
         }
-        // GET: Home
-        public JsonResult List(bool? status, ViewModel viewModel)
+
+        public JsonResult List(bool? status)
         {
-
-
             string json = "";
-            
+            var list = _db.TodoModel.OrderBy(o => o.Id).ToList();
 
             if (status == true)
             {
-                var listTrue = _db.TodoModel.Where(o => o.Status == true).OrderBy(o => o.Id).ToList();
-                if (listTrue.Count > 0)
-                {
-                    json = JsonConvert.SerializeObject(listTrue);
-                }
-
+                list = _db.TodoModel.Where(o => o.Status == true).OrderBy(o => o.Id).ToList();
             }
             else if (status == false)
             {
-                var listFalse = _db.TodoModel.Where(o => o.Status == false).OrderBy(o => o.Id).ToList();
-                json = JsonConvert.SerializeObject(listFalse);
-            }
-            else
-            {
-                var list = _db.TodoModel.OrderBy(o => o.Id).ToList();
-                json = JsonConvert.SerializeObject(list);
+                list = _db.TodoModel.Where(o => o.Status == false).OrderBy(o => o.Id).ToList();
+
             }
 
 
-
-
-
-
-
+            json = JsonConvert.SerializeObject(list);
             return Json(json, JsonRequestBehavior.AllowGet);
+
+
+
         }
 
         [HttpPost]
-        public JsonResult Create(string content)
+        public JsonResult Create(TodoModel todoModel)
         {
-            TodoModel todoModel = new TodoModel();
             string json = "";
-            if (content != null)
-            {
-                todoModel.Content = content;
-                todoModel.Status = false;
-                _db.TodoModel.Add(todoModel);
-                _db.SaveChanges();
-            }
+            _todoService.Create(todoModel);
             json = JsonConvert.SerializeObject(todoModel);
+
             return Json(json, JsonRequestBehavior.AllowGet);
         }
 
 
         public ActionResult Update(int id)
         {
-
             _todoService.Update(id);
-
-            return Redirect(Request.UrlReferrer.AbsoluteUri);
+            return Redirect("List");
 
         }
 
-        // GET: Home/Delete/5
         public ActionResult Delete(int id)
         {
-
-
-            //_todoService.Delete(id);
-            TodoModel toDoModel = _db.TodoModel.Find(id);
-            _db.TodoModel.Remove(toDoModel);
-            _db.SaveChanges();
-
-            return Redirect(Request.UrlReferrer.AbsoluteUri);
-
-
+            _todoService.Delete(id);
+            return Redirect("List");
         }
 
         public ActionResult Clear()
         {
             _todoService.Clear();
-
-            return RedirectToAction("Ajax","Index");
+            return Redirect(Request.UrlReferrer.AbsoluteUri);
         }
-
-
 
 
         protected override void Dispose(bool disposing)

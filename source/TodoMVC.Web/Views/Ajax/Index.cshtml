@@ -1,37 +1,34 @@
-﻿@model  TodoMVC.Web.Models.ViewModel
-<script src="~/Scripts/jquery-3.4.1.slim.min.js"></script>
+﻿<script src="~/Scripts/jquery-3.4.1.slim.min.js"></script>
 <script src="~/Scripts/jquery-3.4.1.min.js"></script>
 <script src="~/Scripts/modernizr-2.8.3.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
 
-<input type="button" class="all" value="All">
-<input type="button" class="active" value="Active">
-<input type="button" class="completed" value="Completed">
-<input type="button" class="clear" value="Clear Completed">
-<br/>
-<form class="container">
-   
-    <h2>todos</h2>
-    <input type="text" class="form-control" id="content" name="content" placeholder="What needs to be done?">
-</form>
-<br/>
-<div class="toDoList" id="toDoList"></div>
-<script>
 
+<input type="button" class="btnAll btn btn-info active" value="All">
+<input type="button" class="btnActive btn btn-info" value="Active">
+<input type="button" class="btnCompleted btn btn-info" value="Completed">
+<input type="button" class="btnClear btn btn-info" value="Clear Completed">
+<br />
+<form class="container">
+    <h2>todoList</h2>
+    <input type="text" class="form-control" id="content" placeholder="What needs to be done?">
+</form>
+<div class="toDoList" id="toDoList"></div>
+
+
+<script>
 
     $(document).ready(function () {
         var status = ""
         todoList(status);
-
     });
-
-
+    
 
     function todoList(status) {
         $.ajax({
             url: '/Ajax/List',
-            data: { status: status },
+            data: { "status": status },
             type: 'get',
             cache: false,
             async: false,
@@ -41,11 +38,12 @@
                 if (data.length > 0) {
                     $('#toDoList').empty();
                     $.each(data, function (i, item) {
-                        $("#toDoList").append("<input type='hidden' id='getId' value='" + item.Id + "'> <input type='button' id='status'  value='" + (item.Status ? "V " : "   ") + "'style='padding: 3px 7px; border-radius: 18px; border: 1px solid #5cbf2a; color:#ffffff; font-family: Arial; font-size: 15px; font-weight: bold; text-decoration: none; display: inline-block; cursor: pointer; background-color:#5cbf2a;'/>" + item.Content + "<input type='button' id='delete' value='X' style='padding: 3px 7px; border - radius: 18px; border: 1px solid rgb(208, 39, 24); border - image: none; color: rgb(255, 255, 255); font - family: Arial; font - size: 15px; font - weight: bold; text - decoration: none; display: inline - block; cursor: pointer; background - color: rgb(198, 45, 31);'/><hr>");
-                        
+                        $("#toDoList").append("<hr><input type='button' class='status btn btn-success' id='" + item.Id + "' value='" + (item.Status ? "V" : "  ") + "'style='padding: 3px 7px; border-radius: 18px;'/>   " + (item.Status ? "<strike>" + item.Content + "</strike >" : item.Content) + "    <input type='button' class='delete btn btn-mini btn-danger' style='padding: 3px 7px; border-radius: 18px;' id='" + item.Id + "'value='X'>");
                     });
-                   
-
+                }
+                else
+                {
+                    $('#toDoList').empty();
                 }
             }
         });
@@ -68,30 +66,29 @@
 
     function clear() {
         $.ajax({
-            url: '/Ajax/Clear',           
+            url: '/Ajax/Clear',
             type: 'post',
             cache: false,
-            async: false,
-            dataType: 'json',
+            async: false, 
             success: function () {
                 todoList();
             }
         });
     }
-    function delete1(deleteId,deleteStatus) {
+    function delete1(deleteId) {
         $.ajax({
             url: '/Ajax/Delete',
-            data: { id: deleteId},
+            data: { id: deleteId },
             type: 'post',
             cache: false,
             async: false,
             dataType: 'json',
             success: function (data) {
-                todoList(deleteStatus);
+                todoList();
             }
         });
     }
-    function changeStatus(changeId,status) {
+    function changeStatus(changeId) {
         $.ajax({
             url: '/Ajax/Update',
             data: { id: changeId },
@@ -100,7 +97,7 @@
             async: false,
             dataType: 'json',
             success: function (data) {
-                todoList(status);
+                todoList();
             }
         });
     }
@@ -116,43 +113,31 @@
 
         });
 
-        $(document).on('click', '#delete', function () {
-            let deleteId = $('#getId').val();
-            let deleteStatus = "";
-            if ($('#staus').val() == "V") {
-                deleteStatus = true;
-            }
-            else {
-                deleteStatus = false;
-            }
-
-            delete1(deleteId, deleteStatus);
+        $(document).on('click', '.delete', function () {
+            var deleteId = this.id;
+            delete1(deleteId);
         });
-       
-        $(document).on('click', '#status', function () {
-            let changeId = $('#getId').val();
+
+        $(document).on('click', '.status', function () {
+            let changeId = this.id;
             changeStatus(changeId);
         });
-
         
-
-        
-
-        $(document).on('click', '.clear', function () {
+        $(document).on('click', '.btnClear', function () {
             clear();
         });
 
-        $(document).on('click', '.all', function () {
+        $(document).on('click', '.btnAll', function () {
             todoList();
         });
-        $(document).on('click', '.active', function () {
+        $(document).on('click', '.btnActive', function () {
             todoList(false);
         });
-        $(document).on('click', '.completed', function () {
+        $(document).on('click', '.btnCompleted', function () {
             todoList(true);
         });
-        
+
     });
 
-  
+
 </script>
