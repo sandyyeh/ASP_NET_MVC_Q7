@@ -13,7 +13,7 @@ namespace TodoMVC.Web.Infrastructure.Interface
         void Update(int id);
         void Delete(int id);
         void Clear();
-        ViewModel GetAll(string status, ViewModel viewModel);
+        IEnumerable<TodoModel> GetAll(bool? status);
 
 
 

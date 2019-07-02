@@ -24,58 +24,64 @@ namespace TodoMVC.Web.Controllers
             return View();
         }
 
-        public JsonResult List(bool? status)
+        public ActionResult List(bool? status)
         {
             string json = "";
             var list = _db.TodoModel.OrderBy(o => o.Id).ToList();
 
             if (status == true)
             {
-                list = _db.TodoModel.Where(o => o.Status == true).OrderBy(o => o.Id).ToList();
+                list = _todoService.GetAll(status).ToList();
             }
             else if (status == false)
             {
-                list = _db.TodoModel.Where(o => o.Status == false).OrderBy(o => o.Id).ToList();
-
+                list = _todoService.GetAll(status).ToList();
             }
+       
 
+            var setting = new JsonSerializerSettings
+            {
+                ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver()
+            };
+            json = JsonConvert.SerializeObject(list, Formatting.None, setting);
 
-            json = JsonConvert.SerializeObject(list);
             return Json(json, JsonRequestBehavior.AllowGet);
-            
+
         }
 
         [HttpPost]
         public JsonResult Create(TodoModel todoModel)
         {
-            string json = "";
+
             _todoService.Create(todoModel);
-            json = JsonConvert.SerializeObject(todoModel);
+            string json = JsonConvert.SerializeObject(todoModel);
 
             return Json(json, JsonRequestBehavior.AllowGet);
         }
 
-
+        [HttpPost]
         public ActionResult Update(int id)
         {
             _todoService.Update(id);
-            return Redirect("List");
+            return Json(new { success = true });
 
         }
 
+        [HttpPost]
         public ActionResult Delete(int id)
         {
             _todoService.Delete(id);
-            return Redirect("List");
+            return Json(new { success = true });
         }
 
+        [HttpPost]
         public ActionResult Clear()
         {
             _todoService.Clear();
-            return Redirect(Request.UrlReferrer.AbsoluteUri);
+            return Json(new { success = true });
         }
 
-
+        //可有可無，此為保險起見，釋放資源用途
         protected override void Dispose(bool disposing)
         {
             if (disposing)

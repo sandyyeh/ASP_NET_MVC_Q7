@@ -12,6 +12,6 @@ namespace TodoMVC.Web.Models
             ToDoModel = new TodoModel();
         }
         public TodoModel ToDoModel { get; set; }
-        public List<TodoModel> ToDoModels { get; set; }
+        public IEnumerable<TodoModel> ToDoModels { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using TodoMVC.Web.Infrastructure.Interface;
 using TodoMVC.Web.Models;
 
@@ -7,30 +8,26 @@ namespace TodoMVC.Web.Infrastructure.Repository
     public class TodoRepository : ITodoRepository
     {
 
-        public ViewModel GetAll(string status, ViewModel viewModel)
+        public IEnumerable<TodoModel> GetAll(bool? status)
         {
             using (var db = new DatabaseEntities1())
             {
-                
-                if (status == "Active")
+         
+                if (status == false)
                 {
-                    var q = db.TodoModel.Where(o => o.Status == false).ToList();
-                    viewModel.ToDoModels = q;
-                    return viewModel;
+                    var q = db.TodoModel.Where(o => o.Status == false).ToList();            
+                    return q;
                 }
-                else if (status == "Completed")
+                else if (status==true)
                 {
-                    var q = db.TodoModel.Where(o => o.Status).ToList();
-                    viewModel.ToDoModels = q;
-                    return viewModel;
+                    var q = db.TodoModel.Where(o => o.Status).ToList();              
+                    return q;
                 }
                 else
                 {
-                    viewModel.ToDoModels = db.TodoModel.ToList();
-                    return viewModel;
+                    var q = db.TodoModel.ToList();
+                    return q;
                 }
-
-
             }
         }
 

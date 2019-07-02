@@ -17,12 +17,14 @@ namespace TodoMVC.Web.Controllers
         }
 
         // GET: Home
-        public ActionResult Index(string status, ViewModel viewModel)
+        public ActionResult Index(bool? status)
         {
-
-            var list = _todoService.GetAll(status, viewModel);
-
-            return View(list);
+            var list = _todoService.GetAll(status);
+            ViewModel viewModel = new ViewModel
+            {
+                ToDoModels = list         
+            };
+            return View(viewModel);
         }
 
         [HttpPost]

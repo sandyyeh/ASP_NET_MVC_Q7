@@ -18,9 +18,9 @@ namespace TodoMVC.Web.Service
             _todoRepository = new TodoRepository();
         }
 
-        public  ViewModel GetAll(string status, ViewModel viewModel)
+        public  IEnumerable<TodoModel> GetAll(bool? status)
         {            
-            var list = _todoRepository.GetAll(status, viewModel);
+            var list = _todoRepository.GetAll(status);
             return list;
         }
         public void Create(TodoModel toDoModel)

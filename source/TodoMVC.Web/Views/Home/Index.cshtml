@@ -4,14 +4,14 @@
 {
     @Html.AntiForgeryToken()
 
-    <div class="form-group">
+    <form class="form-group">
         <h2>todos</h2>
         <input type="text" class="form-control" id="content" name="content" value="@Model.ToDoModel.Content" placeholder="What needs to be done?">
-    </div>
+    </form>
 }
 
 <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
-
+<br/>
 @foreach (var item in Model.ToDoModels)
 {
     <tr>
@@ -41,7 +41,7 @@
 
 
 @Html.ActionLink("All", "Index")|
-@Html.ActionLink("Active", "Index", new { status = "Active" })|
-@Html.ActionLink("Completed", "Index", new { status = "Completed" })|
+@Html.ActionLink("Active", "Index", new { status = false })|
+@Html.ActionLink("Completed", "Index", new { status = true })|
 @Html.ActionLink("Clear Completed", "Clear")
 
