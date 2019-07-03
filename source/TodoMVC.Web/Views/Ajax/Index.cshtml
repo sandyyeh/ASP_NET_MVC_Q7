@@ -36,7 +36,7 @@
                 if (data.length > 0) {
                     $('#toDoList').empty();
                     $.each(data, function (i, item) {
-                        $("#toDoList").append("<hr><a data=id='" + item.id + "'><input type='button' class='btnStatus btn btn-success' id='" + item.id + "' name='" + status + "' value='" + (item.status ? "V" : "  ") + "'style='padding: 3px 7px; border-radius: 18px;'/>   " + (item.status ? "<strike>" + item.content + "</strike >" : item.content) + "    <input type='button' class='btnDelete btn btn-mini btn-danger' style='padding: 3px 7px; border-radius: 18px;' id='" + item.id + "'name='" + status + "'value='X'></a>");
+                        $("#toDoList").append("<hr><input type='button' class='btn btn-success'  id='btnStatus' data-id='" + item.id + "' data-status='" + status + "' value='" + (item.status ? "V" : "  ") + "'style='padding: 3px 7px; border-radius: 18px;'/>   " + (item.status ? "<strike>" + item.content + "</strike >" : item.content) + "    <input type='button' id='btnDelete' class='btn btn-mini btn-danger' style='padding: 3px 7px; border-radius: 18px;' data-id='" + item.id + "'data-status='" + status + "'value='X'></a>");
                     });
                 }
                 else {
@@ -104,16 +104,21 @@
             return false;
         });
 
-        $(document).on('click', '.btnDelete', function () {
-            var deleteId = this.id;
-            //var deleteId = $(this).data('id');
-            let status = $(this).attr('name');
+        //$("#btnDelete").on("click",function () {
+        //    var deleteId = $(this).data('id');
+        //    let status = $(this).attr('name');
+        //    delete1(deleteId, status);
+        //});
+
+        $(document).on('click', '#btnDelete', function () {
+            var deleteId = $(this).data('id');
+            let status = $(this).data('status');
             delete1(deleteId, status);
         });
 
-        $(document).on('click', '.btnStatus', function () {
-            let changeId = this.id;
-            let status = $(this).attr('name');
+        $(document).on('click', '#btnStatus', function () {
+            var changeId = $(this).data('id');
+            let status = $(this).data('status');
             changeStatus(changeId, status);
         });
 
