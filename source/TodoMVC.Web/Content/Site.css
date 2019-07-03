@@ -15,4 +15,8 @@ select,
 textarea {
     max-width: 280px;
 }
-
+/*.button {
+    padding: 3px 7px;
+    border-radius: 18px;
+    background-color: #C9FFC9;
+}*/

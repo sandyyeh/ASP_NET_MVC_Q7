@@ -1,6 +1,7 @@
 ﻿<script src="~/Scripts/jquery-3.4.1.min.js"></script>
 <script src="~/Scripts/modernizr-2.8.3.js"></script>
 <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+@*<link href="~/Content/Site.css" rel="stylesheet"/>*@
 
 
 <form class="input">
@@ -8,12 +9,21 @@
     <input type="text" class="form-control" id="content" placeholder="What needs to be done?">
 </form>
 <br />
-<input type="button" class="btnAll btn btn-info active" value="All">
-<input type="button" class="btnActive btn btn-info" value="Active">
-<input type="button" class="btnCompleted btn btn-info" value="Completed">
-<input type="button" class="btnClear btn btn-info" value="Clear Completed">
+<input type="button" class="btn btn-info active" id="btnAll" value="All">
+<input type="button" class="btn btn-info" id="btnActive" value="Active">
+<input type="button" class="btn btn-info" id="btnCompleted" value="Completed">
+<input type="button" class="btn btn-info" id="btnClear" value="Clear Completed">
 <div class="toDoList" id="toDoList"></div>
 
+
+<style type="text/css">
+
+    .button {
+        padding: 3px 7px;
+        border-radius: 18px;
+    }
+
+</style>
 
 <script>
 
@@ -36,7 +46,8 @@
                 if (data.length > 0) {
                     $('#toDoList').empty();
                     $.each(data, function (i, item) {
-                        $("#toDoList").append("<hr><input type='button' class='btn btn-success'  id='btnStatus' data-id='" + item.id + "' data-status='" + status + "' value='" + (item.status ? "V" : "  ") + "'style='padding: 3px 7px; border-radius: 18px;'/>   " + (item.status ? "<strike>" + item.content + "</strike >" : item.content) + "    <input type='button' id='btnDelete' class='btn btn-mini btn-danger' style='padding: 3px 7px; border-radius: 18px;' data-id='" + item.id + "'data-status='" + status + "'value='X'></a>");
+                        $("#toDoList").append("<hr><input type='button' class='button btn btn-success'  id='btnStatus' data-id='" + item.id + "' data-status='" + status + "' value='" + (item.status ? "V" : "  ") + "'/>   " + (item.status ? "<strike>" + item.content + "</strike >" : item.content) + "    <input type='button' id='btnDelete' class='button btn btn-mini btn-danger'  data-id='" + item.id + "'data-status='" + status + "'value='X'></a>");
+                        $("#btnStatus").addClass("button");
                     });
                 }
                 else {
@@ -104,11 +115,6 @@
             return false;
         });
 
-        //$("#btnDelete").on("click",function () {
-        //    var deleteId = $(this).data('id');
-        //    let status = $(this).attr('name');
-        //    delete1(deleteId, status);
-        //});
 
         $(document).on('click', '#btnDelete', function () {
             var deleteId = $(this).data('id');
@@ -122,17 +128,18 @@
             changeStatus(changeId, status);
         });
 
-        $(document).on('click', '.btnClear', function () {
+
+        $('#btnClear').on('click', function () {
             clear();
         });
 
-        $(document).on('click', '.btnAll', function () {
+        $('#btnAll').on('click', function () {
             todoList();
         });
-        $(document).on('click', '.btnActive', function () {
+        $('#btnActive').on('click', function () {
             todoList(false);
         });
-        $(document).on('click', '.btnCompleted', function () {
+        $('#btnCompleted').on('click', function () {
             todoList(true);
         });
 

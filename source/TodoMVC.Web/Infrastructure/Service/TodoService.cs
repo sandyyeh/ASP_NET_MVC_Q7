@@ -1,17 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Collections.Generic;
 using TodoMVC.Web.Infrastructure.Interface;
 using TodoMVC.Web.Infrastructure.Repository;
 using TodoMVC.Web.Models;
 
+
+
 namespace TodoMVC.Web.Service
 {
-    public class TodoService
+    public class TodoService:ITodoService
     {
 
-        private ITodoRepository _todoRepository;
+        private readonly ITodoRepository _todoRepository;
 
         public TodoService()
         {
