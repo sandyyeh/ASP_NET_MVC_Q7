@@ -1,2 +1,33 @@
 ﻿<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="~/Scripts/Vue/app.js"></script>
+
+<style type="text/css">
+
+    .button {
+        padding: 3px 7px;
+        border-radius: 18px;
+    }
+
+</style>
+
+<div id="app">
+    <h2>todoList</h2>
+    <input type="text" class="form-control" v-model="inputValue" placeholder="What needs to be done?" v-on:keyup.enter="create(this.value)">
+    <br />
+    <input type="button" class="btn btn-info active" v-on:click="todoList(null)" value="All">
+    <input type="button" class="btn btn-info" v-on:click="todoList(false)" value="Active">
+    <input type="button" class="btn btn-info" v-on:click="todoList(true)" value="Completed">
+    <input type="button" class="btn btn-info" v-on:click="clear" value="Clear Completed">
+    <div class="todoList" id="todoList">
+        <div v-for="item in list">
+            <hr>
+            <input type="button" class="button btn btn-success" v-model="item.status?'V':'  '" v-on:click="changeStatus(item.id,item.status)">
+           {{item.content}}
+            <input type="button" class="button btn btn-mini btn-danger" v-on:click="delete1(item.id,item.status)" value="X">
+        </div>
+    </div>
+</div>
+
+
+
 
